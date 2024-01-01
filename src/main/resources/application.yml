@@ -1,0 +1,31 @@
+server:
+  port: 8090
+
+spring:
+  batch:
+    jdbc:
+      initialize-schema: always
+  datasource:
+    url: jdbc:postgresql://localhost:5432/meeting?createDatabaseIfNotExist=true
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    database: postgresql
+    hibernate:
+      ddl-auto: create
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+#  flyway:
+#    enabled: true
+#    locations: migration
+#  security:
+#    oauth2:
+#      authorizationserver:
+#        endpoint:
+#          authorization-uri:
