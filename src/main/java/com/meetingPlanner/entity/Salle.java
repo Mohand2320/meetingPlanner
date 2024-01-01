@@ -2,6 +2,7 @@ package com.meetingPlanner.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+//import javax.validation.constraints.Pattern;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +19,7 @@ public class Salle {
     private Long id;
 
     @Column(length = 10, nullable = false, unique = true)
+//    @Pattern(regexp = "", message = "format invalid")
     private String nom;
 
     @Column(nullable = false)

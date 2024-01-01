@@ -18,7 +18,7 @@ public class Outil {
     private String nom;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "salle_id")
+    @JoinColumn(name = "salle_id", nullable = true)
     private Salle salle;
 
 }
