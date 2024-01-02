@@ -1,10 +1,12 @@
 package com.meetingPlanner.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.meetingPlanner.enums.TypeReunion;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.sql.Date;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -18,12 +20,13 @@ public class Reunion {
     private Long id;
     private String sujet;
     private int nombrePersonne;
-    private Date heureDebut;
-    private Date heureFin;
+    private LocalDateTime heureDebut;
+    private LocalDateTime heureFin;
 //    @ManyToOne
 //    private Employe organisateur;
     @ManyToOne
     @JoinColumn(name = "salle_id")
+    @JsonIgnore
     private Salle salle;
     @Enumerated(EnumType.STRING)
     private TypeReunion type;

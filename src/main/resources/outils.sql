@@ -1,11 +1,3 @@
-INSERT INTO Outil (nom, salle_id) VALUES
-                                      ('Ecran', NULL),
-                                      ('Pieuvre', NULL),
-                                      ('Tableau', NULL),
-                                      ('Webcam', NULL),
-                                      ('Tableau', NULL),
-                                      ('Pieuvre', NULL),
-                                      ('Pieuvre', NULL);
 
 
 
@@ -22,3 +14,13 @@ INSERT INTO Salle (nom, capacite) VALUES
                                       ('E3002', 8),
                                       ('E3003', 9),
                                       ('E3004', 4);
+
+
+INSERT INTO Outil (nom, salle_id) VALUES
+                                      ('Ecran', 1),
+                                      ('Pieuvre', 1),
+                                      ('Tableau', 1),
+                                      ('Webcam', 2),
+                                      ('Tableau', 3),
+                                      ('Pieuvre', 2),
+                                      ('Pieuvre', 2);

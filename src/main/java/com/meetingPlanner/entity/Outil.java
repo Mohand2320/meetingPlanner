@@ -1,5 +1,6 @@
 package com.meetingPlanner.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -19,6 +20,7 @@ public class Outil {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "salle_id", nullable = true)
+    @JsonIgnore
     private Salle salle;
 
 }

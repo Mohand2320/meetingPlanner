@@ -1,9 +1,11 @@
 package com.meetingPlanner.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.sql.Date;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -17,17 +19,18 @@ public class Creneau {
     private Long id;
 
     @Column(nullable = false)
-    private Date heureDebut;
+    private LocalDateTime heureDebut;
 
     @Column(nullable = false)
-    private Date heureFin;
+    private LocalDateTime heureFin;
 
     @ManyToOne
-    @JoinColumn(name = "salle_id")
+    @JoinColumn(name = "salle_id", nullable = false)
+    @JsonIgnore
     private Salle salle;
 
-    @Column(nullable = false)
-    private boolean reserve;
+
+    private boolean reserve = false;
 
     @OneToOne(mappedBy = "creneau")
     private Reunion reunion;
