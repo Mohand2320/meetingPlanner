@@ -1,7 +1,7 @@
 package com.meetingPlanner.recource;
 
+import com.meetingPlanner.dto.ReunionDTO;
 import com.meetingPlanner.entity.Reunion;
-import com.meetingPlanner.entity.Salle;
 import com.meetingPlanner.service.ReunionService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,11 +27,11 @@ public class ReunionController {
         return ResponseEntity.ok(reunions);
     }
 
-    @GetMapping("/salles/{id}")
-    public ResponseEntity<List<Salle>> getlistSalle(@PathVariable Long id) {
-        List<Salle> salleList = reunionService.affecterCreneaux(id);
-        if (!salleList.isEmpty()) {
-                return ResponseEntity.ok(salleList);
+    @GetMapping("/Creneau/{id}")
+    public ResponseEntity<Optional<Reunion>> getCreneau(@PathVariable Long id) {
+        Optional<Reunion> reunion  = reunionService.affecterCreneaux(id);
+        if (reunion.isPresent()) {
+                return ResponseEntity.ok(reunion);
         } else {
             return ResponseEntity.notFound().build();
         }
@@ -46,7 +46,7 @@ public class ReunionController {
     }
 
     @PostMapping
-    public ResponseEntity<Reunion> saveReunion(@RequestBody Reunion reunion) {
+    public ResponseEntity<Reunion> saveReunion(@RequestBody ReunionDTO reunion) {
         Optional<Reunion> savedReunionOpt = reunionService.saveReunion(reunion);
         if (savedReunionOpt.isPresent()) {
             Reunion savedReunion = savedReunionOpt.get();
@@ -62,8 +62,8 @@ public class ReunionController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Optional<Reunion>> updateReunion(@PathVariable Long id, @RequestBody Reunion reunion) {
-        Optional<Reunion> existingReunion = reunionService.saveReunion(reunion);
+    public ResponseEntity<Optional<Reunion>> updateReunion(@PathVariable Long id, @RequestBody ReunionDTO reunion) {
+        Optional<Reunion> existingReunion = reunionService.updateReunion(reunion);
         if (!existingReunion.isPresent()) {
             reunion.setId(id); // Assurez-vous que l'ID est correctement défini
             Optional<Reunion> updatedReunion = reunionService.saveReunion(reunion);

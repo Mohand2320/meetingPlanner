@@ -24,10 +24,10 @@ public class Reunion {
     private LocalDateTime heureFin;
 //    @ManyToOne
 //    private Employe organisateur;
-    @ManyToOne
-    @JoinColumn(name = "salle_id")
-    @JsonIgnore
-    private Salle salle;
+//    @ManyToOne
+//    @JoinColumn(name = "salle_id")
+//    @JsonIgnore
+//    private Salle salle;
     @Enumerated(EnumType.STRING)
     private TypeReunion type;
     @OneToOne(cascade = CascadeType.ALL)

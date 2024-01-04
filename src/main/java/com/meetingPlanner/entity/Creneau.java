@@ -33,5 +33,6 @@ public class Creneau {
     private boolean reserve = false;
 
     @OneToOne(mappedBy = "creneau")
+    @JsonIgnore
     private Reunion reunion;
 }
