@@ -24,3 +24,13 @@ INSERT INTO Outil (nom, salle_id) VALUES
                                       ('Tableau', 3),
                                       ('Pieuvre', 2),
                                       ('Pieuvre', 2);
+
+
+INSERT INTO Outil (nom) VALUES
+                                      ('Ecran'),
+                                      ('Pieuvre'),
+                                      ('Tableau'),
+                                      ('Webcam'),
+                                      ('Tableau'),
+                                      ('Pieuvre'),
+                                      ('Pieuvre');

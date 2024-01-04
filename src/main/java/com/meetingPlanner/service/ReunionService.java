@@ -5,6 +5,7 @@ import com.meetingPlanner.entity.Creneau;
 import com.meetingPlanner.entity.Reunion;
 import com.meetingPlanner.entity.Salle;
 import com.meetingPlanner.exception.EntityAleadyExisteException;
+import com.meetingPlanner.exception.InvalidTimeException;
 import com.meetingPlanner.repository.CreneauRepository;
 import com.meetingPlanner.repository.ReunionRepository;
 import com.meetingPlanner.repository.SalleRepository;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 import java.util.OptionalInt;
@@ -24,9 +26,7 @@ public class ReunionService {
 
     private final ReunionRepository reunionRepository;
     private final SalleRepository salleRepository;
-
     private final CreneauRepository creneauRepository;
-
     private final ModelMapper modelMapper;
 
     public ReunionService(ReunionRepository reunionRepository, SalleRepository salleRepository, CreneauRepository creneauRepository, ModelMapper modelMapper) {
@@ -35,7 +35,6 @@ public class ReunionService {
         this.creneauRepository = creneauRepository;
         this.modelMapper = modelMapper;
     }
-
 
     public List<Salle> getSallesWithOutilsAndCapacite(List<Salle> salles, List<String> nomsOutils, int nombrePersonnes) {
         return salles.stream()
@@ -49,9 +48,10 @@ public class ReunionService {
 
     public Optional<Reunion> affecterCreneaux(Long idReunion){
         Optional<Reunion> reunion = reunionRepository.findById(idReunion);
+        // touver la liste des salle avec les conditions de capacité n type de reunion
         List<Salle> salleList = getSallesWithOutilsAndCapacite(salleRepository.findAll(), reunion.get().getType()
                 .getEquipements(), reunion.get().getNombrePersonne());
-
+        // trouve le creneau
         for (Salle salle : salleList) {
             boolean find = false;
             Creneau foundCreneau = null;
@@ -66,7 +66,7 @@ public class ReunionService {
                 }
             }
 
-            if (foundCreneau != null) {
+            if (foundCreneau != null) { // si le crenau déja cree mais pas reseve !
                 foundCreneau.setReserve(true);
                 foundCreneau.setReunion(reunion.get());
                 reunion.get().setCreneau(foundCreneau);
@@ -76,19 +76,29 @@ public class ReunionService {
                 reunionRepository.save(reunion.get());
                 break;
             } else if(find==false) {
-                Creneau newCreneau = new Creneau();
-                newCreneau.setHeureDebut(reunion.get().getHeureDebut());
-                newCreneau.setHeureFin(reunion.get().getHeureFin());
-                newCreneau.setSalle(salle);
-                newCreneau.setReserve(true);
-                newCreneau.setReunion(reunion.get());
-                salle.addCrenau(newCreneau);
-                reunion.get().setCreneau(newCreneau);
+                // chercher s'il exite un creneau avant l'heur de la reunion
+                Boolean b = salle.getCreneaux().stream()
+                        .anyMatch(creneau -> (creneau.getHeureFin().isEqual(reunion.get().getHeureDebut().minusHours(1))
+                                || creneau.getHeureFin().isAfter(reunion.get().getHeureDebut().minusHours(1)))
+                                && creneau.isReserve());
+
+                if(b) {  //si le creneau precedent n est pas resevé
+                    Creneau newCreneau = new Creneau();
+                    newCreneau.setHeureDebut(reunion.get().getHeureDebut());
+                    newCreneau.setHeureFin(reunion.get().getHeureFin());
+                    newCreneau.setSalle(salle);
+                    newCreneau.setReserve(true);
+                    newCreneau.setReunion(reunion.get());
+                    salle.addCrenau(newCreneau);
+                    reunion.get().setCreneau(newCreneau);
 //                reunion.get().setSalle(salle);
-                creneauRepository.save(newCreneau);
+                    creneauRepository.save(newCreneau);
 //                salleRepository.save(salle);
-                reunionRepository.save(reunion.get());
-                break;
+                    reunionRepository.save(reunion.get());
+                    break;
+                } else { //  si le creneau precedent est reserve
+                    break;
+                }
             }
         }
         return reunion;
@@ -96,12 +106,22 @@ public class ReunionService {
 
 
 
-
-
-
-    public List<Reunion> getAllReunions() {
-
-        return reunionRepository.findAll();
+    public List<ReunionDTO> getAllReunions() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+        List<Reunion> reunions = reunionRepository.findAll();
+        List<ReunionDTO> reunionDTOs = reunions.stream()
+                .map(reunion -> {
+                    ReunionDTO dto = modelMapper.map(reunion, ReunionDTO.class);
+                    if(reunion.getCreneau() != null) {
+                        dto.setCreneauHoraire(reunion.getCreneau().getHeureDebut().format(formatter) + " - " +
+                                reunion.getCreneau().getHeureFin().format(formatter) + "| salle : "+ reunion.getCreneau().getSalle().getNom());
+                    } else {
+                        dto.setCreneauHoraire(" - ");
+                    }
+                    return dto;
+                })
+                .collect(Collectors.toList());
+        return reunionDTOs;
     }
 
     public Reunion getReunionById(Long id) {
@@ -114,7 +134,7 @@ public class ReunionService {
             Reunion reunion = modelMapper.map(reunionDTO , Reunion.class);
             return Optional.of(reunionRepository.save(reunion));
         } else {
-            throw new EntityAleadyExisteException("change les heures  !");
+            throw new EntityAleadyExisteException(" choisissez une autre heure ou journee pour la reservation !");
         }
     }
 

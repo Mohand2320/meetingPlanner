@@ -21,4 +21,6 @@ public class ReunionDTO {
     private LocalDateTime heureFin;
     @Enumerated(EnumType.STRING)
     private TypeReunion type;
+
+    private String creneauHoraire ;
 }

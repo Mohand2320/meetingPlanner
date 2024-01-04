@@ -21,29 +21,23 @@ public class ReunionController {
         this.reunionService = reunionService;
     }
 
-    @GetMapping
-    public ResponseEntity<List<Reunion>> getAllReunions() {
-        List<Reunion> reunions = reunionService.getAllReunions();
-        return ResponseEntity.ok(reunions);
-    }
 
-    @GetMapping("/Creneau/{id}")
+    /**
+     * tourver un creneau pour une reunioin
+     * @param id de la reunion
+     * @return
+     */
+    @GetMapping("/getCreneau/{id}")
     public ResponseEntity<Optional<Reunion>> getCreneau(@PathVariable Long id) {
         Optional<Reunion> reunion  = reunionService.affecterCreneaux(id);
-        if (reunion.isPresent()) {
-                return ResponseEntity.ok(reunion);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }@GetMapping("/{id}")
-    public ResponseEntity<Reunion> getReunionById(@PathVariable Long id) {
-        Reunion reunion = reunionService.getReunionById(id);
-        if (reunion != null) {
-            return ResponseEntity.ok(reunion);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        return ResponseEntity.ok(reunion);
+//        if (reunion.isPresent()) {
+//                return ResponseEntity.ok(reunion);
+//        } else {
+//            return ResponseEntity.notFound().build();
+//        }
     }
+
 
     @PostMapping
     public ResponseEntity<Reunion> saveReunion(@RequestBody ReunionDTO reunion) {
@@ -60,6 +54,25 @@ public class ReunionController {
             return ResponseEntity.badRequest().build();
         }
     }
+
+
+    @GetMapping
+    public ResponseEntity<List<ReunionDTO>> getAllReunions() {
+        List<ReunionDTO> reunions = reunionService.getAllReunions();
+        return ResponseEntity.ok(reunions);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Reunion> getReunionById(@PathVariable Long id) {
+        Reunion reunion = reunionService.getReunionById(id);
+        if (reunion != null) {
+            return ResponseEntity.ok(reunion);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+
 
     @PutMapping("/{id}")
     public ResponseEntity<Optional<Reunion>> updateReunion(@PathVariable Long id, @RequestBody ReunionDTO reunion) {
