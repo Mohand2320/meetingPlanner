@@ -1,4 +1,4 @@
-# Contrôleur Reunion
+# Meeting Planner
 ### lancer le ficher docker compose
 ### excuter le sql qui dans le fichier outils.sql
 
