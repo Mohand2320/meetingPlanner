@@ -70,7 +70,5 @@ public class SalleService {
         return modelMapper.map(salleRepository.save(salle), SalleDTO.class);
     }
 
-    public  int calculerNombre(int total, double pourcentage) {
-        return (int) Math.round(total * (pourcentage / 100));
-    }
+
 }

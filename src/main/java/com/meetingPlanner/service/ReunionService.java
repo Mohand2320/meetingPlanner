@@ -29,7 +29,8 @@ public class ReunionService {
     private final CreneauRepository creneauRepository;
     private final ModelMapper modelMapper;
 
-    public ReunionService(ReunionRepository reunionRepository, SalleRepository salleRepository, CreneauRepository creneauRepository, ModelMapper modelMapper) {
+    public ReunionService(ReunionRepository reunionRepository, SalleRepository salleRepository, CreneauRepository
+            creneauRepository, ModelMapper modelMapper) {
         this.reunionRepository = reunionRepository;
         this.salleRepository = salleRepository;
         this.creneauRepository = creneauRepository;
@@ -41,7 +42,7 @@ public class ReunionService {
                 .filter(salle -> nomsOutils.stream()
                         .allMatch(nomOutil -> salle.getOutils().stream()
                                 .anyMatch(outil -> outil.getNom().equals(nomOutil))))
-                .filter(salle -> salle.getCapacite() >= nombrePersonnes)
+                .filter(salle ->  (int) Math.round(salle.getCapacite() * (0.7))>= nombrePersonnes)
                 .collect(Collectors.toList());
     }
 
@@ -103,8 +104,6 @@ public class ReunionService {
         }
         return reunion;
     }
-
-
 
     public List<ReunionDTO> getAllReunions() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
